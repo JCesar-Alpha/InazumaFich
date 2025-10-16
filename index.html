@@ -157,10 +157,16 @@
         }
         
         .status-value {
-            font-size: 1.3rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--secondary-color);
             margin: 10px 0;
+        }
+        
+        .status-formula {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
         }
         
         .techniques-table input, .techniques-table select {
@@ -313,24 +319,45 @@
             <h2>Atributos Principais</h2>
             <div class="attributes">
                 <div class="attribute-item">
-                    <span>Velocidade</span>
+                    <span>Velocidade (VEL)</span>
                     <input type="number" id="velocidade" min="1" max="20" value="10" class="attribute-value">
                 </div>
                 <div class="attribute-item">
-                    <span>Técnica</span>
+                    <span>Técnica (TEC)</span>
                     <input type="number" id="tecnica" min="1" max="20" value="10" class="attribute-value">
                 </div>
                 <div class="attribute-item">
-                    <span>Força</span>
+                    <span>Força (FOR)</span>
                     <input type="number" id="forca" min="1" max="20" value="10" class="attribute-value">
                 </div>
                 <div class="attribute-item">
-                    <span>Resistência</span>
+                    <span>Resistência (RES)</span>
                     <input type="number" id="resistencia" min="1" max="20" value="10" class="attribute-value">
                 </div>
                 <div class="attribute-item">
-                    <span>Espírito</span>
+                    <span>Espírito (ESP)</span>
                     <input type="number" id="espirito" min="1" max="20" value="10" class="attribute-value">
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Status de Combate</h2>
+            <div class="status-cards">
+                <div class="status-card">
+                    <h3>HP</h3>
+                    <div class="status-value" id="hpValue">40</div>
+                    <div class="status-formula">(10 + RES) × 2</div>
+                </div>
+                <div class="status-card">
+                    <h3>GP</h3>
+                    <div class="status-value" id="gpValue">40</div>
+                    <div class="status-formula">(10 + ESP) × 2</div>
+                </div>
+                <div class="status-card">
+                    <h3>Stamina</h3>
+                    <div class="status-value" id="staminaValue">50</div>
+                    <div class="status-formula">(5 + VEL + RES) × 2</div>
                 </div>
             </div>
         </div>
@@ -373,27 +400,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-        
-        <div class="section">
-            <h2>Status de Combate</h2>
-            <div class="status-cards">
-                <div class="status-card">
-                    <h3>HP</h3>
-                    <div class="status-value" id="hpValue">40</div>
-                    <p>(10 + RES) × 2</p>
-                </div>
-                <div class="status-card">
-                    <h3>GP</h3>
-                    <div class="status-value" id="gpValue">40</div>
-                    <p>(10 + ESP) × 2</p>
-                </div>
-                <div class="status-card">
-                    <h3>Stamina</h3>
-                    <div class="status-value" id="staminaValue">50</div>
-                    <p>(5 + VEL + RES) × 2</p>
-                </div>
-            </div>
         </div>
         
         <div class="section">
@@ -467,16 +473,22 @@
         // Tipos de técnicas
         const tiposTecnicas = ['Chute', 'Drible', 'Passe', 'Defesa', 'Captura', 'Suporte'];
         
-        // Atualizar status de combate
-        function updateCombatStatus() {
+        // Função para calcular status automaticamente
+        function calcularStatus() {
             const resistencia = parseInt(document.getElementById('resistencia').value) || 0;
             const espirito = parseInt(document.getElementById('espirito').value) || 0;
             const velocidade = parseInt(document.getElementById('velocidade').value) || 0;
             
+            // HP = (10 + RES) × 2
             const hp = (10 + resistencia) * 2;
+            
+            // GP = (10 + ESP) × 2
             const gp = (10 + espirito) * 2;
+            
+            // Stamina = (5 + VEL + RES) × 2
             const stamina = (5 + velocidade + resistencia) * 2;
             
+            // Atualizar os valores na interface
             document.getElementById('hpValue').textContent = hp;
             document.getElementById('gpValue').textContent = gp;
             document.getElementById('staminaValue').textContent = stamina;
@@ -718,7 +730,7 @@
                     document.getElementById('acessorio').value = characterData.equipment.acessorio || '';
                 }
                 
-                updateCombatStatus();
+                calcularStatus();
                 updateSkills();
                 
                 alert('Ficha carregada com sucesso!');
@@ -745,32 +757,32 @@
                 
                 document.getElementById('techniquesBody').innerHTML = '';
                 
-                updateCombatStatus();
+                calcularStatus();
                 updateSkills();
             }
         }
         
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar event listeners para os atributos
+            const atributos = ['velocidade', 'tecnica', 'forca', 'resistencia', 'espirito'];
+            atributos.forEach(atributo => {
+                document.getElementById(atributo).addEventListener('input', calcularStatus);
+            });
+            
             document.getElementById('addTechnique').addEventListener('click', () => addTechnique());
             document.getElementById('generateTechnique').addEventListener('click', generateTechniqueWithAI);
             
-            document.querySelectorAll('.attribute-value').forEach(input => {
-                input.addEventListener('change', function() {
-                    updateCombatStatus();
-                    updateSkills();
-                });
-            });
-            
             document.querySelectorAll('.skills-table input').forEach(input => {
-                input.addEventListener('change', updateSkills);
+                input.addEventListener('input', updateSkills);
             });
             
             document.getElementById('saveButton').addEventListener('click', saveCharacterSheet);
             document.getElementById('loadButton').addEventListener('click', loadCharacterSheet);
             document.getElementById('resetButton').addEventListener('click', resetCharacterSheet);
             
-            updateCombatStatus();
+            // Calcular status iniciais
+            calcularStatus();
             updateSkills();
             
             // Adicionar técnicas iniciais
