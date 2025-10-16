@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Inazuma Eleven RPG</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            margin: 20px 0 15px;
+        }
+        
+        h3 {
+            color: var(--dark-color);
+            margin: 15px 0 10px;
+        }
+        
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .player-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            font-weight: bold;
+        }
+        
+        .attributes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .attribute-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--light-color);
+            border-radius: 4px;
+        }
+        
+        .attribute-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            width: 50px;
+            text-align: center;
+        }
+        
+        .skills-table input {
+            width: 50px;
+            text-align: center;
+        }
+        
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .status-card {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 10px 0;
+        }
+        
+        .techniques-table input, .techniques-table select {
+            width: 100%;
+            font-size: 12px;
+        }
+        
+        .ai-panel {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .ai-response {
+            background-color: #34495e;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 80px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: white;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .btn-save {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-reset {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-load {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-add {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-ai {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
+        .btn-remove {
+            background-color: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 768px) {
+            .player-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .attributes {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ficha Inazuma Eleven RPG</h1>
+            <p>Sistema Integrado com IA para Criação de Técnicas</p>
+        </header>
+        
+        <!-- Painel de IA -->
+        <div class="section">
+            <div class="ai-panel">
+                <h3>Assistente de Criação de Técnicas</h3>
+                <div class="form-group">
+                    <label for="aiPrompt">Descreva a técnica que deseja criar:</label>
+                    <textarea id="aiPrompt" placeholder="Ex: Um chute de fogo que deixa rastro no campo..."></textarea>
+                </div>
+                <button id="generateTechnique" class="btn-ai">Gerar Técnica com IA</button>
+                <div class="loading" id="aiLoading">Processando...</div>
+                <div class="ai-response" id="aiResponse">
+                    A resposta da IA aparecerá aqui...
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Informações do Jogador</h2>
+            <div class="player-info">
+                <div class="form-group">
+                    <label for="playerName">Nome do Jogador:</label>
+                    <input type="text" id="playerName" placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label for="characterName">Nome do Personagem:</label>
+                    <input type="text" id="characterName" placeholder="Nome do personagem">
+                </div>
+                <div class="form-group">
+                    <label for="characterAlias">Apelido:</label>
+                    <input type="text" id="characterAlias" placeholder="Apelido do personagem">
+                </div>
+                <div class="form-group">
+                    <label for="team">Time:</label>
+                    <input type="text" id="team" placeholder="Nome do time">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="personality">Personalidade:</label>
+                <textarea id="personality" placeholder="Descreva a personalidade do personagem"></textarea>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Atributos Principais</h2>
+            <div class="attributes">
+                <div class="attribute-item">
+                    <span>Velocidade</span>
+                    <input type="number" id="velocidade" min="1" max="20" value="10" class="attribute-value">
+                </div>
+                <div class="attribute-item">
+                    <span>Técnica</span>
+                    <input type="number" id="tecnica" min="1" max="20" value="10" class="attribute-value">
+                </div>
+                <div class="attribute-item">
+                    <span>Força</span>
+                    <input type="number" id="forca" min="1" max="20" value="10" class="attribute-value">
+                </div>
+                <div class="attribute-item">
+                    <span>Resistência</span>
+                    <input type="number" id="resistencia" min="1" max="20" value="10" class="attribute-value">
+                </div>
+                <div class="attribute-item">
+                    <span>Espírito</span>
+                    <input type="number" id="espirito" min="1" max="20" value="10" class="attribute-value">
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Perícias</h2>
+            <table class="skills-table">
+                <thead>
+                    <tr>
+                        <th>Perícia</th>
+                        <th>Mod. Atributo</th>
+                        <th>Bônus</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Drible (TEC)</td>
+                        <td><input type="number" id="dribleMod" value="0"></td>
+                        <td><input type="number" id="dribleBonus" value="0"></td>
+                        <td><span id="dribleTotal">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Chute (FOR)</td>
+                        <td><input type="number" id="chuteMod" value="0"></td>
+                        <td><input type="number" id="chuteBonus" value="0"></td>
+                        <td><span id="chuteTotal">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Passe (TEC)</td>
+                        <td><input type="number" id="passeMod" value="0"></td>
+                        <td><input type="number" id="passeBonus" value="0"></td>
+                        <td><span id="passeTotal">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Defesa (RES)</td>
+                        <td><input type="number" id="defesaMod" value="0"></td>
+                        <td><input type="number" id="defesaBonus" value="0"></td>
+                        <td><span id="defesaTotal">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>Status de Combate</h2>
+            <div class="status-cards">
+                <div class="status-card">
+                    <h3>HP</h3>
+                    <div class="status-value" id="hpValue">40</div>
+                    <p>(10 + RES) × 2</p>
+                </div>
+                <div class="status-card">
+                    <h3>GP</h3>
+                    <div class="status-value" id="gpValue">40</div>
+                    <p>(10 + ESP) × 2</p>
+                </div>
+                <div class="status-card">
+                    <h3>Stamina</h3>
+                    <div class="status-value" id="staminaValue">50</div>
+                    <p>(5 + VEL + RES) × 2</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Elemento do Personagem</h2>
+            <div class="form-group">
+                <select id="elemento">
+                    <option value="neutral">⚪ Neutro</option>
+                    <option value="fire">🔥 Fogo</option>
+                    <option value="water">💧 Água</option>
+                    <option value="wind">🌪️ Vento</option>
+                    <option value="earth">🌱 Terra</option>
+                    <option value="electric">⚡ Elétrico</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Técnicas Especiais</h2>
+            <table class="techniques-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Tipo</th>
+                        <th>Elemento</th>
+                        <th>GP</th>
+                        <th>CD</th>
+                        <th>Efeito</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="techniquesBody">
+                </tbody>
+            </table>
+            <button id="addTechnique" class="btn-add" style="margin-top: 10px;">+ Adicionar Técnica</button>
+        </div>
+        
+        <div class="section">
+            <h2>Equipamentos</h2>
+            <div class="form-group">
+                <label for="chuteiras">Chuteiras:</label>
+                <input type="text" id="chuteiras" placeholder="Modelo das chuteiras">
+            </div>
+            <div class="form-group">
+                <label for="luvas">Luvas (se aplicável):</label>
+                <input type="text" id="luvas" placeholder="Tipo de luvas">
+            </div>
+            <div class="form-group">
+                <label for="acessorio">Acessório:</label>
+                <input type="text" id="acessorio" placeholder="Acessório especial">
+            </div>
+        </div>
+        
+        <div class="section buttons">
+            <button id="saveButton" class="btn-save">Salvar Ficha</button>
+            <button id="loadButton" class="btn-load">Carregar Ficha</button>
+            <button id="resetButton" class="btn-reset">Limpar Ficha</button>
+        </div>
+    </div>
+
+    <script>
+        // Elementos disponíveis
+        const elementos = [
+            { value: 'neutral', label: '⚪ Neutro' },
+            { value: 'fire', label: '🔥 Fogo' },
+            { value: 'water', label: '💧 Água' },
+            { value: 'wind', label: '🌪️ Vento' },
+            { value: 'earth', label: '🌱 Terra' },
+            { value: 'electric', label: '⚡ Elétrico' }
+        ];
+        
+        // Tipos de técnicas
+        const tiposTecnicas = ['Chute', 'Drible', 'Passe', 'Defesa', 'Captura', 'Suporte'];
+        
+        // Atualizar status de combate
+        function updateCombatStatus() {
+            const resistencia = parseInt(document.getElementById('resistencia').value) || 0;
+            const espirito = parseInt(document.getElementById('espirito').value) || 0;
+            const velocidade = parseInt(document.getElementById('velocidade').value) || 0;
+            
+            const hp = (10 + resistencia) * 2;
+            const gp = (10 + espirito) * 2;
+            const stamina = (5 + velocidade + resistencia) * 2;
+            
+            document.getElementById('hpValue').textContent = hp;
+            document.getElementById('gpValue').textContent = gp;
+            document.getElementById('staminaValue').textContent = stamina;
+        }
+        
+        // Atualizar perícias
+        function updateSkills() {
+            const forca = parseInt(document.getElementById('forca').value) || 0;
+            const tecnica = parseInt(document.getElementById('tecnica').value) || 0;
+            const resistencia = parseInt(document.getElementById('resistencia').value) || 0;
+            
+            // Drible (TEC)
+            const dribleMod = parseInt(document.getElementById('dribleMod').value) || 0;
+            const dribleBonus = parseInt(document.getElementById('dribleBonus').value) || 0;
+            document.getElementById('dribleTotal').textContent = tecnica + dribleMod + dribleBonus;
+            
+            // Chute (FOR)
+            const chuteMod = parseInt(document.getElementById('chuteMod').value) || 0;
+            const chuteBonus = parseInt(document.getElementById('chuteBonus').value) || 0;
+            document.getElementById('chuteTotal').textContent = forca + chuteMod + chuteBonus;
+            
+            // Passe (TEC)
+            const passeMod = parseInt(document.getElementById('passeMod').value) || 0;
+            const passeBonus = parseInt(document.getElementById('passeBonus').value) || 0;
+            document.getElementById('passeTotal').textContent = tecnica + passeMod + passeBonus;
+            
+            // Defesa (RES)
+            const defesaMod = parseInt(document.getElementById('defesaMod').value) || 0;
+            const defesaBonus = parseInt(document.getElementById('defesaBonus').value) || 0;
+            document.getElementById('defesaTotal').textContent = resistencia + defesaMod + defesaBonus;
+        }
+        
+        // Adicionar técnica
+        function addTechnique(techniqueData = null) {
+            const row = document.createElement('tr');
+            
+            if (techniqueData) {
+                row.innerHTML = `
+                    <td><input type="text" value="${techniqueData.nome || ''}"></td>
+                    <td>
+                        <select>
+                            ${tiposTecnicas.map(tipo => 
+                                `<option value="${tipo}" ${tipo === techniqueData.tipo ? 'selected' : ''}>${tipo}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            ${elementos.map(elem => 
+                                `<option value="${elem.value}" ${elem.value === techniqueData.elemento ? 'selected' : ''}>${elem.label}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td><input type="number" value="${techniqueData.gp || 0}" min="0"></td>
+                    <td><input type="number" value="${techniqueData.cd || 0}" min="0"></td>
+                    <td><input type="text" value="${techniqueData.efeito || ''}"></td>
+                    <td><button class="btn-remove">Remover</button></td>
+                `;
+            } else {
+                row.innerHTML = `
+                    <td><input type="text" placeholder="Nome da técnica"></td>
+                    <td>
+                        <select>
+                            ${tiposTecnicas.map(tipo => `<option value="${tipo}">${tipo}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            ${elementos.map(elem => `<option value="${elem.value}">${elem.label}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td><input type="number" placeholder="GP" min="0"></td>
+                    <td><input type="number" placeholder="CD" min="0"></td>
+                    <td><input type="text" placeholder="Efeito mecânico"></td>
+                    <td><button class="btn-remove">Remover</button></td>
+                `;
+            }
+            
+            const removeButton = row.querySelector('.btn-remove');
+            removeButton.addEventListener('click', function() {
+                row.remove();
+            });
+            
+            document.getElementById('techniquesBody').appendChild(row);
+        }
+        
+        // Gerar técnica com IA
+        async function generateTechniqueWithAI() {
+            const prompt = document.getElementById('aiPrompt').value;
+            const aiLoading = document.getElementById('aiLoading');
+            const aiResponse = document.getElementById('aiResponse');
+            
+            if (!prompt.trim()) {
+                aiResponse.textContent = "Por favor, descreva a técnica que deseja criar.";
+                return;
+            }
+            
+            aiLoading.style.display = 'block';
+            aiResponse.textContent = "Processando sua solicitação...";
+            
+            try {
+                const simulatedResponse = await simulateDeepSeekAPI(prompt);
+                
+                aiResponse.innerHTML = `
+                    <strong>Técnica Gerada:</strong><br>
+                    <strong>Nome:</strong> ${simulatedResponse.nome}<br>
+                    <strong>Tipo:</strong> ${simulatedResponse.tipo}<br>
+                    <strong>Elemento:</strong> ${simulatedResponse.elemento}<br>
+                    <strong>Custo GP:</strong> ${simulatedResponse.gp}<br>
+                    <strong>CD:</strong> ${simulatedResponse.cd}<br>
+                    <strong>Efeito:</strong> ${simulatedResponse.efeito}<br><br>
+                    <button onclick="addTechnique(${JSON.stringify(simulatedResponse).replace(/"/g, '&quot;')})" class="btn-add">Adicionar Técnica</button>
+                `;
+                
+            } catch (error) {
+                aiResponse.textContent = "Erro ao gerar técnica.";
+            } finally {
+                aiLoading.style.display = 'none';
+            }
+        }
+        
+        // Simulação da API
+        function simulateDeepSeekAPI(prompt) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const hasFire = prompt.toLowerCase().includes('fogo');
+                    const hasWater = prompt.toLowerCase().includes('água') || prompt.toLowerCase().includes('agua');
+                    const hasWind = prompt.toLowerCase().includes('vento');
+                    const hasElectric = prompt.toLowerCase().includes('elétrico') || prompt.toLowerCase().includes('eletrico');
+                    
+                    let elemento = 'neutral';
+                    if (hasFire) elemento = 'fire';
+                    else if (hasWater) elemento = 'water';
+                    else if (hasWind) elemento = 'wind';
+                    else if (hasElectric) elemento = 'electric';
+                    
+                    const isDefensive = prompt.toLowerCase().includes('defesa');
+                    const isSupport = prompt.toLowerCase().includes('suporte') || prompt.toLowerCase().includes('cura');
+                    
+                    let tipo = 'Chute';
+                    if (isDefensive) tipo = 'Defesa';
+                    else if (isSupport) tipo = 'Suporte';
+                    else if (prompt.toLowerCase().includes('drible')) tipo = 'Drible';
+                    else if (prompt.toLowerCase().includes('passe')) tipo = 'Passe';
+                    else if (prompt.toLowerCase().includes('captura')) tipo = 'Captura';
+                    
+                    const response = {
+                        nome: gerarNomeTecnica(prompt),
+                        tipo: tipo,
+                        elemento: elemento,
+                        gp: Math.floor(Math.random() * 6) + 2,
+                        cd: Math.floor(Math.random() * 6) + 12,
+                        efeito: gerarEfeitoMecanico(tipo, elemento)
+                    };
+                    
+                    resolve(response);
+                }, 1500);
+            });
+        }
+        
+        // Funções auxiliares
+        function gerarNomeTecnica(prompt) {
+            const prefixos = ['Super', 'Mega', 'Ultra', 'Grande'];
+            const sufixos = ['Impacto', 'Explosão', 'Fúria', 'Tempestade'];
+            const elemento = prompt.toLowerCase().includes('fogo') ? 'Flamejante' : 
+                           prompt.toLowerCase().includes('água') ? 'Aquático' :
+                           prompt.toLowerCase().includes('agua') ? 'Aquático' :
+                           prompt.toLowerCase().includes('vento') ? 'Ciclone' :
+                           prompt.toLowerCase().includes('elétrico') ? 'Elétrico' :
+                           prompt.toLowerCase().includes('eletrico') ? 'Elétrico' : 'Poder';
+            
+            return `${prefixos[Math.floor(Math.random() * prefixos.length)]} ${sufixos[Math.floor(Math.random() * sufixos.length)]} ${elemento}`;
+        }
+        
+        function gerarEfeitoMecanico(tipo, elemento) {
+            const efeitos = {
+                'Chute': `Aumenta poder do chute em +3`,
+                'Drible': `Permite driblar múltiplos oponentes`,
+                'Defesa': `Bloqueia ataques elementais`,
+                'Passe': `Passa por defesas, aliado recebe +1`,
+                'Suporte': `Recupera Stamina para aliados`,
+                'Captura': `Chance aumentada de interceptar`
+            };
+            
+            return efeitos[tipo] || "Efeito especial";
+        }
+        
+        // Salvar ficha
+        function saveCharacterSheet() {
+            const characterData = {
+                playerName: document.getElementById('playerName').value,
+                characterName: document.getElementById('characterName').value,
+                characterAlias: document.getElementById('characterAlias').value,
+                team: document.getElementById('team').value,
+                personality: document.getElementById('personality').value,
+                elemento: document.getElementById('elemento').value,
+                attributes: {
+                    velocidade: document.getElementById('velocidade').value,
+                    tecnica: document.getElementById('tecnica').value,
+                    forca: document.getElementById('forca').value,
+                    resistencia: document.getElementById('resistencia').value,
+                    espirito: document.getElementById('espirito').value
+                },
+                equipment: {
+                    chuteiras: document.getElementById('chuteiras').value,
+                    luvas: document.getElementById('luvas').value,
+                    acessorio: document.getElementById('acessorio').value
+                }
+            };
+            
+            localStorage.setItem('inazumaCharacterSheet', JSON.stringify(characterData));
+            alert('Ficha salva com sucesso!');
+        }
+        
+        // Carregar ficha
+        function loadCharacterSheet() {
+            const savedData = localStorage.getItem('inazumaCharacterSheet');
+            if (savedData) {
+                const characterData = JSON.parse(savedData);
+                
+                document.getElementById('playerName').value = characterData.playerName || '';
+                document.getElementById('characterName').value = characterData.characterName || '';
+                document.getElementById('characterAlias').value = characterData.characterAlias || '';
+                document.getElementById('team').value = characterData.team || '';
+                document.getElementById('personality').value = characterData.personality || '';
+                document.getElementById('elemento').value = characterData.elemento || 'neutral';
+                
+                if (characterData.attributes) {
+                    document.getElementById('velocidade').value = characterData.attributes.velocidade || '';
+                    document.getElementById('tecnica').value = characterData.attributes.tecnica || '';
+                    document.getElementById('forca').value = characterData.attributes.forca || '';
+                    document.getElementById('resistencia').value = characterData.attributes.resistencia || '';
+                    document.getElementById('espirito').value = characterData.attributes.espirito || '';
+                }
+                
+                if (characterData.equipment) {
+                    document.getElementById('chuteiras').value = characterData.equipment.chuteiras || '';
+                    document.getElementById('luvas').value = characterData.equipment.luvas || '';
+                    document.getElementById('acessorio').value = characterData.equipment.acessorio || '';
+                }
+                
+                updateCombatStatus();
+                updateSkills();
+                
+                alert('Ficha carregada com sucesso!');
+            } else {
+                alert('Nenhuma ficha salva encontrada.');
+            }
+        }
+        
+        // Limpar ficha
+        function resetCharacterSheet() {
+            if (confirm('Tem certeza que deseja limpar toda a ficha?')) {
+                document.querySelectorAll('input, textarea, select').forEach(element => {
+                    if (element.type !== 'button') {
+                        element.value = '';
+                    }
+                });
+                
+                document.getElementById('velocidade').value = '10';
+                document.getElementById('tecnica').value = '10';
+                document.getElementById('forca').value = '10';
+                document.getElementById('resistencia').value = '10';
+                document.getElementById('espirito').value = '10';
+                document.getElementById('elemento').value = 'neutral';
+                
+                document.getElementById('techniquesBody').innerHTML = '';
+                
+                updateCombatStatus();
+                updateSkills();
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('addTechnique').addEventListener('click', () => addTechnique());
+            document.getElementById('generateTechnique').addEventListener('click', generateTechniqueWithAI);
+            
+            document.querySelectorAll('.attribute-value').forEach(input => {
+                input.addEventListener('change', function() {
+                    updateCombatStatus();
+                    updateSkills();
+                });
+            });
+            
+            document.querySelectorAll('.skills-table input').forEach(input => {
+                input.addEventListener('change', updateSkills);
+            });
+            
+            document.getElementById('saveButton').addEventListener('click', saveCharacterSheet);
+            document.getElementById('loadButton').addEventListener('click', loadCharacterSheet);
+            document.getElementById('resetButton').addEventListener('click', resetCharacterSheet);
+            
+            updateCombatStatus();
+            updateSkills();
+            
+            // Adicionar técnicas iniciais
+            addTechnique();
+            addTechnique();
+        });
+    </script>
+</body>
+</html>
