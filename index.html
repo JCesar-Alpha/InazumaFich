@@ -346,13 +346,13 @@
             <div class="status-cards">
                 <div class="status-card">
                     <h3>HP</h3>
-                    <div class="status-value" id="hpValue">40</div>
-                    <div class="status-formula">(10 + RES) × 2</div>
+                    <div class="status-value" id="hpValue">30</div>
+                    <div class="status-formula">(5 + RES) × 2</div>
                 </div>
                 <div class="status-card">
                     <h3>GP</h3>
-                    <div class="status-value" id="gpValue">40</div>
-                    <div class="status-formula">(10 + ESP) × 2</div>
+                    <div class="status-value" id="gpValue">30</div>
+                    <div class="status-formula">(5 + ESP) × 2</div>
                 </div>
                 <div class="status-card">
                     <h3>Stamina</h3>
@@ -473,26 +473,39 @@
         // Tipos de técnicas
         const tiposTecnicas = ['Chute', 'Drible', 'Passe', 'Defesa', 'Captura', 'Suporte'];
         
-        // Função para calcular status automaticamente
+        // =============================================
+        // CÓDIGO DE CÁLCULO DE STATUS - INTEGRADO
+        // =============================================
+        
         function calcularStatus() {
+            // Obter valores dos atributos
+            const velocidade = parseInt(document.getElementById('velocidade').value) || 0;
             const resistencia = parseInt(document.getElementById('resistencia').value) || 0;
             const espirito = parseInt(document.getElementById('espirito').value) || 0;
-            const velocidade = parseInt(document.getElementById('velocidade').value) || 0;
+
+            // CALCULAR HP: (5 + RESISTÊNCIA) × 2
+            const hp = (5 + resistencia) * 2;
             
-            // HP = (10 + RES) × 2
-            const hp = (10 + resistencia) * 2;
+            // CALCULAR GP: (5 + ESPÍRITO) × 2
+            const gp = (5 + espirito) * 2;
             
-            // GP = (10 + ESP) × 2
-            const gp = (10 + espirito) * 2;
-            
-            // Stamina = (5 + VEL + RES) × 2
+            // CALCULAR STAMINA: (5 + VELOCIDADE + RESISTÊNCIA) × 2
             const stamina = (5 + velocidade + resistencia) * 2;
-            
-            // Atualizar os valores na interface
+
+            // Atualizar valores na interface
             document.getElementById('hpValue').textContent = hp;
             document.getElementById('gpValue').textContent = gp;
             document.getElementById('staminaValue').textContent = stamina;
+            
+            console.log(`Cálculos realizados:
+            HP: (5 + ${resistencia}) × 2 = ${hp}
+            GP: (5 + ${espirito}) × 2 = ${gp}
+            Stamina: (5 + ${velocidade} + ${resistencia}) × 2 = ${stamina}`);
         }
+        
+        // =============================================
+        // FIM DO CÓDIGO DE CÁLCULO
+        // =============================================
         
         // Atualizar perícias
         function updateSkills() {
@@ -730,6 +743,7 @@
                     document.getElementById('acessorio').value = characterData.equipment.acessorio || '';
                 }
                 
+                // Recalcular status após carregar
                 calcularStatus();
                 updateSkills();
                 
@@ -757,6 +771,7 @@
                 
                 document.getElementById('techniquesBody').innerHTML = '';
                 
+                // Recalcular status após limpar
                 calcularStatus();
                 updateSkills();
             }
@@ -764,9 +779,9 @@
         
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Adicionar event listeners para os atributos
-            const atributos = ['velocidade', 'tecnica', 'forca', 'resistencia', 'espirito'];
-            atributos.forEach(atributo => {
+            // Adicionar event listeners para os atributos que afetam os cálculos
+            const atributosCalculo = ['velocidade', 'resistencia', 'espirito'];
+            atributosCalculo.forEach(atributo => {
                 document.getElementById(atributo).addEventListener('input', calcularStatus);
             });
             
